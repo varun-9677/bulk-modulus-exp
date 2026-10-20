@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bulk Modulus Fun Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1f3a7a; --card:rgba(255,255,255,.93); --soft:#fff7d6; --line:#bfeaff;
+  --pink:#ff5fa2; --orange:#ff9f1c; --green:#18c9a0; --blue:#3d8bff; --purple:#8e5cff;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Fredoka","Comic Sans MS","Trebuchet MS",Arial,sans-serif;color:var(--ink);
+  background:linear-gradient(160deg,#5be7ff 0%,#6cf0c2 35%,#ffe27a 68%,#ff9ecb 100%);background-attachment:fixed;min-height:100vh;overflow-x:hidden}
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg i{position:absolute;font-style:normal;opacity:.6;animation:float 11s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-34px) rotate(14deg)}}
+header{position:relative;z-index:1;text-align:center;padding:18px 12px 6px}
+h1{margin:0;font-size:clamp(26px,5vw,44px);color:#fff;text-shadow:0 4px 0 #1f7fd1,0 8px 14px #0003;letter-spacing:1px}
+.sub{margin:6px 0;font-weight:600;color:#fff;text-shadow:0 2px 0 #1f7fd1}
+.formula{display:inline-block;margin:6px;padding:10px 22px;border-radius:30px;background:var(--soft);font-weight:700;border:4px dashed var(--orange);transform:rotate(1.5deg);box-shadow:0 5px 0 #e08400}
+main{position:relative;z-index:1;max-width:1400px;margin:auto;padding:10px 14px;display:grid;gap:14px;grid-template-columns:270px minmax(300px,1fr) 290px;align-items:start}
+.lower{position:relative;z-index:1;max-width:1400px;margin:auto;padding:0 14px 20px;display:grid;gap:14px;grid-template-columns:1fr 1fr}
+.card{background:var(--card);border-radius:26px;border:4px solid #fff;box-shadow:0 10px 0 #0000001a,0 18px 30px #1b5aa533;overflow:hidden}
+.card h2{margin:0;padding:12px 16px;font-size:19px;color:#fff;background:linear-gradient(90deg,var(--purple),var(--pink))}
+.card:nth-child(2) h2{background:linear-gradient(90deg,var(--blue),var(--green))}
+.card:nth-child(3) h2{background:linear-gradient(90deg,var(--orange),var(--pink))}
+.pad{padding:14px}
+label{display:block;font-weight:600;margin:12px 0 4px}
+label b{float:right;color:var(--pink)}
+select{width:100%;padding:10px;border-radius:16px;border:3px solid var(--line);font:inherit;color:var(--ink);background:#fff}
+input[type=range]{width:100%;height:10px;accent-color:var(--pink);cursor:pointer}
+button{width:100%;margin-top:10px;padding:12px;border:0;border-radius:20px;font:inherit;font-weight:700;font-size:16px;color:#fff;cursor:pointer;
+  background:linear-gradient(180deg,#44e0a0,#16b57a);box-shadow:0 5px 0 #0e8a5d;transition:transform .1s}
+button:active{transform:translateY(4px);box-shadow:0 1px 0 #0e8a5d}
+button.alt{background:linear-gradient(180deg,#ffb347,#ff7a2f);box-shadow:0 5px 0 #c25a1c}
+button.blue{background:linear-gradient(180deg,#6f9bff,#4568e8);box-shadow:0 5px 0 #2f48b5}
+.note{margin-top:12px;padding:10px 12px;border-radius:16px;background:#e9f6ff;font-size:14px;line-height:1.45}
+.stage{position:relative;height:470px;background:radial-gradient(circle at 50% 110%,#fff3a8,transparent 55%),linear-gradient(#7fdcff,#c9f6ff 60%,#fff6d9);touch-action:none}
+.stage canvas{display:block;width:100%;height:100%}
+.tip{position:absolute;left:10px;right:10px;bottom:10px;text-align:center;background:#fffc;border-radius:14px;padding:7px;font-size:13px;font-weight:600}
+.badge{position:absolute;top:10px;left:10px;background:var(--pink);color:#fff;border-radius:20px;padding:5px 12px;font-weight:700;font-size:13px}
+.m{display:flex;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:16px;margin-bottom:7px;font-size:14px;font-weight:600}
+.m strong{text-align:right;overflow-wrap:anywhere}
+.m:nth-child(1){background:#ffe3ee}.m:nth-child(2){background:#e0f4ff}.m:nth-child(3){background:#efe4ff}
+.m:nth-child(4){background:#dffbe9}.m:nth-child(5){background:#fff0b8}.m:nth-child(6){background:#ffe6d2}
+.meter{height:20px;border-radius:12px;background:#dff3ff;overflow:hidden;border:3px solid #fff;box-shadow:inset 0 2px 4px #0002}
+.meter div{height:100%;width:0;background:linear-gradient(90deg,#ff5fa2,#ffb347,#18c9a0);transition:width .4s}
+.tabs{display:flex;gap:6px;padding:12px 12px 0}
+.tabs button{margin:0;padding:9px 4px;font-size:13px;background:#dbeaff;color:#1f4a9a;box-shadow:none}
+.tabs button.on{background:var(--blue);color:#fff}
+.txt{padding:14px;line-height:1.6}
+canvas#graph{display:block;width:100%;height:280px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px 4px;text-align:center;border-bottom:2px dotted var(--line)}
+th{background:#e2f4ff}
+.wrap{padding:10px;overflow-x:auto}
+footer{position:relative;z-index:1;text-align:center;padding:14px;color:#fff;font-weight:700;text-shadow:0 2px 0 #1f7fd1}
+@media(max-width:1050px){main{grid-template-columns:1fr 1fr}.stage-card{grid-column:1/-1;grid-row:1}}
+@media(max-width:650px){main,.lower{grid-template-columns:1fr}.stage{height:390px}}
+</style>
+</head>
+<body>
+<div class="bg" id="bg"></div>
+<header>
+  <h1>🐠 Bulk Modulus Fun Lab 🫧</h1>
+  <p class="sub">Squeeze the jelly ball from every side and watch its volume shrink!</p>
+  <div class="formula">K = − ΔP ÷ (ΔV / V)</div>
+</header>
+
+<main>
+<section class="card">
+  <h2>🎛️ Experiment Controls</h2>
+  <div class="pad">
+    <label for="material">🧪 Material</label>
+    <select id="material">
+      <option value="water">💧 Water</option>
+      <option value="glycerin">🍯 Glycerin</option>
+      <option value="mercury">🪞 Mercury</option>
+      <option value="aluminium">🥄 Aluminium</option>
+      <option value="copper">🟠 Copper</option>
+      <option value="steel">🔩 Steel</option>
+    </select>
+    <label for="pressure">💪 Extra Pressure ΔP <b id="pVal"></b></label>
+    <input type="range" id="pressure" min="0" max="100" step="1" value="50">
+    <label for="vol">🎈 Starting Volume V <b id="vVal"></b></label>
+    <input type="range" id="vol" min="1" max="10" step="0.5" value="4">
+    <button id="applyBtn">▶ Squeeze It!</button>
+    <button class="alt" id="resetBtn">↻ Start Over</button>
+    <div class="note">💡 Deep in the ocean, about 10 km down, the pressure is roughly 100 MPa. Try different materials at the same squeeze!</div>
+  </div>
+</section>
+
+<section class="card stage-card">
+  <h2>🌊 3D Underwater Playground</h2>
+  <div class="stage" id="stage">
+    <span class="badge" id="badge">Ball is relaxing 😌</span>
+    <div class="tip">🔴 Red arrows squeeze from all sides • Drag to spin • Scroll to zoom</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>📊 Live Results</h2>
+  <div class="pad">
+    <div class="m"><span>Pressure change ΔP</span><strong id="rP"></strong></div>
+    <div class="m"><span>Original volume V</span><strong id="rV"></strong></div>
+    <div class="m"><span>Volume strain ΔV/V</span><strong id="rStrain"></strong></div>
+    <div class="m"><span>Volume change ΔV</span><strong id="rDV"></strong></div>
+    <div class="m"><span>Bulk modulus K</span><strong id="rK"></strong></div>
+    <div class="m"><span>Compressibility 1/K</span><strong id="rC"></strong></div>
+    <div class="m" style="background:#fff;padding:4px 0"><span>🛡️ Hard-to-squeeze meter</span></div>
+    <div class="meter"><div id="meter"></div></div>
+    <div class="note" id="newVol"></div>
+  </div>
+</section>
+</main>
+
+<section class="lower">
+  <section class="card">
+    <h2>📚 Learn &amp; Explore</h2>
+    <div class="tabs">
+      <button class="on" data-t="theory">📘 Theory</button>
+      <button data-t="proc">🧪 Steps</button>
+      <button data-t="key">⭐ Remember</button>
+    </div>
+    <div class="txt" id="tabText"></div>
+  </section>
+
+  <section class="card">
+    <h2>📈 Pressure vs Volume Strain</h2>
+    <div class="pad">
+      <canvas id="graph" width="640" height="340"></canvas>
+      <div class="note">The slope of the line is the bulk modulus K. Steeper line = harder to squeeze!</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>📝 My Observations</h2>
+    <div class="wrap">
+      <table>
+        <thead><tr><th>#</th><th>Material</th><th>ΔP (MPa)</th><th>V (L)</th><th>ΔV/V</th><th>K (Pa)</th></tr></thead>
+        <tbody id="obs"><tr><td colspan="6">No readings yet. Press Record!</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pad"><button class="blue" id="recBtn">＋ Record Reading</button></div>
+  </section>
+
+  <section class="card">
+    <h2>🎯 Aim &amp; Conclusion</h2>
+    <div class="txt">
+      <b>Aim:</b> To see how an all-round pressure changes the volume of a substance and to calculate its bulk modulus.
+      <p><b>Conclusion:</b> For the same pressure change, a material with a larger bulk modulus shows a smaller change in volume, so it is harder to compress.</p>
+    </div>
+  </section>
+</section>
+
+<footer>✨ Small squeezes • Big discoveries ✨</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const MAT = {
+  water:    {K:2.2e9,  name:"Water",     color:0x3fb6ff},
+  glycerin: {K:4.3e9,  name:"Glycerin",  color:0xffc93c},
+  mercury:  {K:25e9,   name:"Mercury",   color:0xb9c4dc},
+  aluminium:{K:70e9,   name:"Aluminium", color:0x7fe0c9},
+  copper:   {K:140e9,  name:"Copper",    color:0xff8c42},
+  steel:    {K:160e9,  name:"Steel",     color:0x8a8cff}
+};
+let squeezing = false, readings = [];
+
+/* floating ocean emojis */
+(function(){
+  const e=["🫧","🐠","🐙","⭐","🐚","🐳","🫧","🦀"];
+  for(let i=0;i<16;i++){
+    const s=document.createElement("i");
+    s.textContent=e[i%e.length];
+    s.style.left=(Math.random()*95)+"%"; s.style.top=(Math.random()*90)+"%";
+    s.style.animationDelay=(-Math.random()*11)+"s"; s.style.fontSize=(22+Math.random()*26)+"px";
+    $("bg").appendChild(s);
+  }
+})();
+
+/* ---------- physics ---------- */
+function calc(){
+  const dP=+$("pressure").value*1e6;      /* Pa */
+  const V=+$("vol").value;                /* litres */
+  const K=MAT[$("material").value].K;
+  const strain=dP/K;                      /* magnitude of ΔV/V */
+  return {dP,V,K,strain,dV:V*strain};
+}
+function fmtK(K){return K>=1e9?(K/1e9).toFixed(1)+" GPa":(K/1e6).toFixed(0)+" MPa";}
+/* exaggerate so stiff materials still shrink a bit (log scale) */
+function visual(strain){
+  if(strain<=0) return 0;
+  return Math.max(0,Math.min(0.4,0.36*(Math.log10(strain)+5)/4));
+}
+
+/* ---------- three.js ---------- */
+const stage=$("stage");
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+stage.insertBefore(renderer.domElement,stage.firstChild);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(40,1,0.1,100);
+let zoom=19; camera.position.set(0,2,zoom);
+
+scene.add(new THREE.HemisphereLight(0xffffff,0x9be7ff,0.9));
+const sun=new THREE.DirectionalLight(0xffffff,0.8); sun.position.set(6,10,8); scene.add(sun);
+const rim=new THREE.PointLight(0xffd6f5,0.6,50); rim.position.set(-8,5,6); scene.add(rim);
+
+const world=new THREE.Group(); scene.add(world);
+
+/* tank */
+const tankW=9,tankH=8,tankD=9;
+const water=new THREE.Mesh(new THREE.BoxGeometry(tankW,tankH,tankD),
+  new THREE.MeshPhongMaterial({color:0x6ad4ff,transparent:true,opacity:0.22,depthWrite:false}));
+world.add(water);
+const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(tankW,tankH,tankD)),
+  new THREE.LineBasicMaterial({color:0xffffff}));
+world.add(edges);
+const sand=new THREE.Mesh(new THREE.BoxGeometry(tankW+0.6,0.7,tankD+0.6),new THREE.MeshPhongMaterial({color:0xffd98a}));
+sand.position.y=-tankH/2-0.35; world.add(sand);
+/* little coral stones */
+[[-3.2,-3.4,-3,0xff6fae],[3.4,-3.5,2.5,0xff9f43],[-2.5,-3.5,3.2,0x8e5cff]].forEach(c=>{
+  const m=new THREE.Mesh(new THREE.SphereGeometry(0.55,16,12),new THREE.MeshPhongMaterial({color:c[3],shininess:70}));
+  m.position.set(c[0],c[1],c[2]); world.add(m);
+});
+
+/* the squeezable ball with a cute face */
+const ball=new THREE.Group(); world.add(ball);
+const bmat=new THREE.MeshPhongMaterial({color:0x3fb6ff,shininess:120,specular:0xffffff,transparent:true,opacity:0.9});
+ball.add(new THREE.Mesh(new THREE.SphereGeometry(1,48,32),bmat));
+ball.add(new THREE.Mesh(new THREE.SphereGeometry(1.015,20,14),new THREE.MeshBasicMaterial({color:0xffffff,wireframe:true,transparent:true,opacity:0.3})));
+const eyeM=new THREE.MeshPhongMaterial({color:0xffffff,shininess:100}), pupM=new THREE.MeshBasicMaterial({color:0x222244});
+[-0.33,0.33].forEach(x=>{
+  const e=new THREE.Mesh(new THREE.SphereGeometry(0.2,16,12),eyeM); e.position.set(x,0.25,0.9);
+  const p=new THREE.Mesh(new THREE.SphereGeometry(0.1,12,10),pupM); p.position.set(x,0.25,1.05);
+  const ch=new THREE.Mesh(new THREE.SphereGeometry(0.1,12,10),new THREE.MeshBasicMaterial({color:0xff8fb8})); ch.position.set(x*1.7,-0.05,0.85);
+  ball.add(e,p,ch);
+});
+const mouth=new THREE.Mesh(new THREE.TorusGeometry(0.24,0.05,8,24,Math.PI),new THREE.MeshBasicMaterial({color:0x222244}));
+mouth.rotation.z=Math.PI; mouth.position.set(0,-0.1,0.95); ball.add(mouth);
+
+/* pressure arrows pointing inward */
+const dirs=[], arrows=[], N=16;
+for(let i=0;i<N;i++){
+  const y=1-(i/(N-1))*2, r=Math.sqrt(1-y*y), th=i*2.399963;
+  dirs.push(new THREE.Vector3(Math.cos(th)*r,y,Math.sin(th)*r));
+}
+const arrM=new THREE.MeshPhongMaterial({color:0xff3b3b,shininess:80});
+dirs.forEach(d=>{
+  const g=new THREE.Group();
+  const cone=new THREE.Mesh(new THREE.ConeGeometry(0.32,0.7,16),arrM); cone.rotation.x=Math.PI/2;
+  const shaft=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.1,0.8,12),arrM); shaft.rotation.x=Math.PI/2; shaft.position.z=-0.75;
+  g.add(cone,shaft);
+  g.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),d.clone().negate());
+  world.add(g); arrows.push(g);
+});
+
+/* rising bubbles */
+const bubbles=[];
+for(let i=0;i<14;i++){
+  const b=new THREE.Mesh(new THREE.SphereGeometry(0.12+Math.random()*0.14,12,10),
+    new THREE.MeshPhongMaterial({color:0xffffff,transparent:true,opacity:0.55}));
+  b.position.set((Math.random()-0.5)*7,(Math.random()-0.5)*7,(Math.random()-0.5)*7);
+  b.userData.sp=0.01+Math.random()*0.02; world.add(b); bubbles.push(b);
+}
+
+let curVis=0, rotX=0.2, rotY=-0.5, clock=0;
+
+function resize(){
+  const w=stage.clientWidth,h=stage.clientHeight;
+  renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+}
+addEventListener("resize",resize); resize();
+
+let drag=false,lx=0,ly=0;
+stage.addEventListener("pointerdown",e=>{drag=true;lx=e.clientX;ly=e.clientY;stage.setPointerCapture(e.pointerId);});
+stage.addEventListener("pointermove",e=>{
+  if(!drag)return;
+  rotY+=(e.clientX-lx)*0.01; rotX+=(e.clientY-ly)*0.008;
+  rotX=Math.max(-0.3,Math.min(1.2,rotX)); lx=e.clientX; ly=e.clientY;
+});
+["pointerup","pointercancel"].forEach(t=>stage.addEventListener(t,()=>drag=false));
+stage.addEventListener("wheel",e=>{e.preventDefault();zoom=Math.max(12,Math.min(30,zoom+e.deltaY*0.01));},{passive:false});
+
+function loop(){
+  requestAnimationFrame(loop);
+  clock+=0.04;
+  const v=calc();
+  const target=squeezing?visual(v.strain):0;
+  curVis+=(target-curVis)*0.1;
+
+  const r0=1.15*Math.cbrt(v.V);               /* ball radius from volume */
+  const r=r0*(1-curVis);
+  ball.scale.setScalar(r);
+  ball.position.y=Math.sin(clock)*0.08;
+  bmat.color.setHex(MAT[$("material").value].color);
+  mouth.scale.y=squeezing&&v.dP>0?-0.6:1;     /* smile turns into a worried frown */
+
+  const f=v.dP/100e6, len=0.5+f*1.1, bob=squeezing?Math.sin(clock*4)*0.15:0;
+  arrows.forEach((g,i)=>{
+    g.visible=squeezing&&v.dP>0;
+    g.scale.set(1,1,len);
+    g.position.copy(dirs[i]).multiplyScalar(r0*1.05+0.9+len*0.9+bob);
+  });
+  bubbles.forEach(b=>{b.position.y+=b.userData.sp; if(b.position.y>3.8)b.position.y=-3.8;});
+  world.rotation.set(rotX,rotY,0);
+  if(!drag&&!squeezing) rotY+=0.0015;
+  camera.position.z=zoom;
+  renderer.render(scene,camera);
+}
+
+/* ---------- UI ---------- */
+function update(){
+  const v=calc();
+  $("pVal").textContent=(v.dP/1e6)+" MPa";
+  $("vVal").textContent=v.V.toFixed(1)+" L";
+  $("rP").textContent=(v.dP/1e6)+" MPa";
+  $("rV").textContent=v.V.toFixed(1)+" L";
+  $("rStrain").textContent="−"+v.strain.toExponential(2);
+  $("rDV").textContent="−"+(v.dV*1000).toFixed(2)+" mL";
+  $("rK").textContent=fmtK(v.K);
+  $("rC").textContent=(1/v.K).toExponential(2)+" /Pa";
+  $("meter").style.width=Math.max(4,(Math.log10(v.K)-9)/2*100)+"%";
+  $("newVol").innerHTML="🎈 New volume: <b>"+(v.V-v.dV).toFixed(3)+" L</b><br><small>The picture is exaggerated so you can see it!</small>";
+  $("badge").textContent=squeezing?"Squeezing! 😵":"Ball is relaxing 😌";
+  drawGraph(v);
+}
+
+function drawGraph(v){
+  const c=$("graph"),x=c.getContext("2d"),W=c.width,H=c.height;
+  x.clearRect(0,0,W,H); x.fillStyle="#fff"; x.fillRect(0,0,W,H);
+  const L=85,R=W-25,T=25,B=H-60,pw=R-L,ph=B-T;
+  const maxP=100, maxS=100e6/v.K;           /* MPa and volume strain */
+  x.strokeStyle="#cfeeff"; x.lineWidth=1;
+  for(let i=0;i<=5;i++){
+    x.beginPath();x.moveTo(L+pw*i/5,T);x.lineTo(L+pw*i/5,B);x.stroke();
+    x.beginPath();x.moveTo(L,T+ph*i/5);x.lineTo(R,T+ph*i/5);x.stroke();
+  }
+  x.strokeStyle="#1f3a7a"; x.lineWidth=3;
+  x.beginPath();x.moveTo(L,T);x.lineTo(L,B);x.lineTo(R,B);x.stroke();
+  x.fillStyle="#1f3a7a"; x.font="12px sans-serif";
+  for(let i=0;i<=5;i++){
+    x.textAlign="center"; x.fillText((maxS*i/5).toExponential(1),L+pw*i/5,B+18);
+    x.textAlign="right";  x.fillText((maxP*i/5).toFixed(0),L-8,B-ph*i/5+4);
+  }
+  x.font="bold 14px sans-serif"; x.textAlign="center";
+  x.fillText("Volume strain ΔV/V (size of shrink)",(L+R)/2,H-12);
+  x.save();x.translate(18,(T+B)/2);x.rotate(-Math.PI/2);x.fillText("Pressure ΔP (MPa)",0,0);x.restore();
+  const gx=s=>L+s/maxS*pw, gy=p=>B-p/maxP*ph;
+  x.strokeStyle="#3d8bff"; x.lineWidth=4; x.lineCap="round";
+  x.beginPath();x.moveTo(gx(0),gy(0));x.lineTo(gx(maxS),gy(maxP));x.stroke();
+  readings.filter(r=>r.K===v.K).forEach(r=>{
+    x.fillStyle="#18c9a0";x.beginPath();x.arc(gx(r.strain),gy(r.dP/1e6),6,0,7);x.fill();
+  });
+  x.fillStyle="#ff5fa2";x.beginPath();x.arc(gx(v.strain),gy(v.dP/1e6),9,0,7);x.fill();
+  x.strokeStyle="#fff";x.lineWidth=3;x.stroke();
+  x.fillStyle="#3d8bff";x.textAlign="right";x.font="bold 13px sans-serif";
+  x.fillText("slope = K = "+fmtK(v.K),R,T+14);
+}
+
+$("applyBtn").onclick=()=>{
+  squeezing=!squeezing;
+  $("applyBtn").textContent=squeezing?"⏸ Release!":"▶ Squeeze It!";
+  update();
+};
+$("resetBtn").onclick=()=>{
+  $("material").value="water";$("pressure").value=50;$("vol").value=4;
+  squeezing=false;readings=[];
+  $("applyBtn").textContent="▶ Squeeze It!";
+  $("obs").innerHTML='<tr><td colspan="6">No readings yet. Press Record!</td></tr>';
+  update();
+};
+["material","pressure","vol"].forEach(id=>{
+  $(id).addEventListener("input",update);$(id).addEventListener("change",update);
+});
+$("recBtn").onclick=()=>{
+  readings.push(Object.assign({mat:MAT[$("material").value].name},calc()));
+  const body=$("obs");body.innerHTML="";
+  const last=readings.slice(-8), start=readings.length-last.length;
+  last.forEach((r,i)=>{
+    const tr=document.createElement("tr");
+    [start+i+1,r.mat,r.dP/1e6,r.V.toFixed(1),r.strain.toExponential(2),r.K.toExponential(2)].forEach(val=>{
+      const td=document.createElement("td");td.textContent=val;tr.appendChild(td);
+    });
+    body.appendChild(tr);
+  });
+  update();
+};
+
+const tabs={
+  theory:"<h3>What is bulk modulus?</h3>Bulk modulus tells us how strongly a material resists a change in volume when pressure squeezes it equally from all sides.<p><b>K = − ΔP ÷ (ΔV / V)</b></p><p>The minus sign shows that volume goes down when pressure goes up.<br>Unit of K: pascal (Pa)<br>Compressibility = 1 ÷ K</p>",
+  proc:"<h3>Try these steps</h3><ol><li>Pick a material.</li><li>Set the extra pressure and starting volume.</li><li>Press <b>Squeeze It!</b></li><li>Watch the ball shrink and the new volume.</li><li>Record readings and compare materials.</li></ol>",
+  key:"<h3>Remember!</h3><ul><li>Pressure is measured in Pa.</li><li>Volume strain has no unit.</li><li>K is measured in Pa.</li><li>Bigger K means harder to compress.</li><li>The 3D shrinking is exaggerated.</li></ul>"
+};
+function showTab(k){$("tabText").innerHTML=tabs[k];}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on");showTab(b.dataset.t);
+});
+showTab("theory");
+update();
+loop();
+</script>
+</body>
+</html>
