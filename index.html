@@ -402,6 +402,218 @@ function showTab(k){$("tabText").innerHTML=tabs[k];}
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on"));
   b.classList.add("on");showTab(b.dataset.t);
+
+  
+/* ===== NAVY BLUE + DEEP PURPLE THEME ===== */
+:root {
+  color-scheme: dark;
+  --ink: #f1f5f9;
+  --card: rgba(26, 34, 52, 0.97);
+  --soft: #0f172a;
+  --line: #334155;
+  --pink: #818cf8;
+  --orange: #38bdf8;
+  --green: #34d399;
+  --blue: #38bdf8;
+  --purple: #6366f1;
+}
+
+body {
+  color: #f1f5f9;
+  background:
+    radial-gradient(ellipse at 15% 10%, rgba(56,189,248,.10), transparent 35%),
+    radial-gradient(ellipse at 90% 80%, rgba(99,102,241,.14), transparent 38%),
+    linear-gradient(135deg, #080811, #1e1e38 55%, #080811);
+  background-attachment: fixed;
+}
+
+.bg i {
+  opacity: .55;
+  filter: drop-shadow(0 0 8px rgba(56,189,248,.3));
+}
+
+h1 {
+  color: #38bdf8;
+  text-shadow: 0 0 18px rgba(56,189,248,.25);
+}
+
+.sub {
+  color: #cbd5e1;
+  text-shadow: none;
+}
+
+.formula {
+  color: #7dd3fc;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  box-shadow: 0 5px 18px rgba(0,0,0,.3);
+  transform: none;
+}
+
+.card {
+  color: #f1f5f9;
+  background: linear-gradient(145deg, #1a2234, #0f172a);
+  border: 1px solid #334155;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.35);
+}
+
+.card h2 {
+  color: #7dd3fc;
+  background: linear-gradient(100deg, #0f172a, #1e1e38);
+  border-bottom: 1px solid #334155;
+}
+
+.card:nth-child(2) h2,
+.card:nth-child(3) h2 {
+  color: #7dd3fc;
+  background: linear-gradient(100deg, #111827, #172554);
+}
+
+label {
+  color: #e2e8f0;
+}
+
+label b {
+  color: #38bdf8;
+}
+
+select {
+  color: #f1f5f9;
+  background: #0b1220;
+  border: 1px solid #475569;
+  border-radius: 10px;
+}
+
+select option {
+  color: #f1f5f9;
+  background: #0f172a;
+}
+
+input[type="range"] {
+  accent-color: #38bdf8;
+}
+
+button {
+  color: #f8fafc;
+  background: linear-gradient(135deg, #164e70, #1e3a5f);
+  border: 1px solid #38617f;
+  border-radius: 10px;
+  box-shadow: 0 4px 0 #0b2940;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #036b9b, #164e70);
+  border-color: #38bdf8;
+}
+
+button.alt {
+  background: linear-gradient(135deg, #6d28d9, #4338ca);
+  box-shadow: 0 4px 0 #312e81;
+}
+
+button.blue {
+  background: linear-gradient(135deg, #164e70, #1e3a5f);
+  box-shadow: 0 4px 0 #0b2940;
+}
+
+.note {
+  color: #cbd5e1;
+  background: rgba(8,8,17,.75);
+  border: 1px solid #334155;
+  border-radius: 10px;
+}
+
+.stage {
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(56,189,248,.12), transparent 65%),
+    linear-gradient(135deg, #080811, #101a32 55%, #0b1020);
+  border: 1px solid rgba(56,189,248,.35);
+}
+
+.stage canvas {
+  cursor: grab;
+  touch-action: none;
+}
+
+.stage canvas:active {
+  cursor: grabbing;
+}
+
+.stage .tip,
+.stage .badge {
+  pointer-events: none;
+}
+
+.tip {
+  color: #f1f5f9;
+  background: rgba(8,8,17,.85);
+  border: 1px solid #334155;
+}
+
+.badge {
+  color: #e0f2fe;
+  background: #164e70;
+  border: 1px solid #38617f;
+}
+
+.m {
+  color: #cbd5e1;
+  background: #0f172a !important;
+  border: 1px solid #334155;
+}
+
+.m strong {
+  color: #7dd3fc;
+}
+
+.meter {
+  background: #0b1220;
+  border: 1px solid #334155;
+}
+
+.meter div {
+  background: linear-gradient(90deg, #34d399, #38bdf8, #818cf8);
+}
+
+.tabs button {
+  color: #cbd5e1;
+  background: #111827;
+  border: 1px solid #334155;
+}
+
+.tabs button.on {
+  color: #fff;
+  background: linear-gradient(135deg, #164e70, #4338ca);
+}
+
+.txt {
+  color: #cbd5e1;
+}
+
+.txt h3 {
+  color: #7dd3fc;
+}
+
+table {
+  color: #cbd5e1;
+}
+
+th {
+  color: #e0f2fe;
+  background: #172554;
+}
+
+th, td {
+  border-bottom: 1px solid #334155;
+}
+
+footer {
+  color: #cbd5e1;
+  text-shadow: none;
+}
+
 });
 showTab("theory");
 update();
